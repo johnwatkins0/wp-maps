@@ -1,0 +1,42 @@
+{
+  "id": 220,
+  "count": 2,
+  "description": "",
+  "link": "http://reunion:8888/map/colby-campus/",
+  "name": "Colby Campus",
+  "slug": "colby-campus",
+  "taxonomy": "map",
+  "parent": 0,
+  "meta": [],
+  "colbycomms__maps__map_data":
+    "{\"zoom\":17,\"center\":{\"lat\":44.56404810397312,\"lng\":-69.66225134983688}}",
+  "_links": {
+    "self": [
+      {
+        "href": "http://reunion:8888/wp-json/wp/v2/maps/220"
+      }
+    ],
+    "collection": [
+      {
+        "href": "http://reunion:8888/wp-json/wp/v2/maps"
+      }
+    ],
+    "about": [
+      {
+        "href": "http://reunion:8888/wp-json/wp/v2/taxonomies/map"
+      }
+    ],
+    "wp:post_type": [
+      {
+        "href": "http://reunion:8888/wp-json/wp/v2/map-feature?maps=220"
+      }
+    ],
+    "curies": [
+      {
+        "name": "wp",
+        "href": "https://api.w.org/{rel}",
+        "templated": true
+      }
+    ]
+  }
+}

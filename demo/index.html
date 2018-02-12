@@ -17,10 +17,10 @@
 
         main {
             border: 1px solid #002878;
-            max-width: 992px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem;
             width: 100%;
+            min-height: 80vh;
         }
 
         *,
@@ -34,11 +34,13 @@
             color: #002878;
         }
     </style>
+    <link rel='stylesheet' id='leaflet-draw-css' href='https://unpkg.com/leaflet@1.3.1/dist/leaflet.css?ver=5.0-alpha-42414'
+        type='text/css' media='all' />
 </head>
 
 <body>
     <main>
         <div data-wp-maps></div>
     </main>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0qIhjsPorqev_z2xjTzWIBsix6ZNDK20" async defer></script>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet-src.js" async defer></script>
 <script type="text/javascript" src="../dist/wp-maps.min.js"></script></body>

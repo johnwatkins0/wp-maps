@@ -1,20 +1,20 @@
 <?php
 /**
- * MapTaxonomy.php
+ * MapCategory.php
  *
  * @package colbycomms/wp-maps
  */
 
-namespace ColbyComms\Maps\MapTaxonomy;
+namespace ColbyComms\Maps\MapCategory;
 
 use ColbyComms\Maps\MapFeature\MapFeature;
 
 /**
  * Handles the map taxonomy.
  */
-class MapTaxonomy {
-	const CATEGORY_NAME = 'map';
-	const CATEGORY_ARGS = [
+class MapCategory {
+	const TAXONOMY_NAME = 'map';
+	const TAXONOMY_ARGS = [
 		'hierarchical' => true,
 		'show_in_rest' => true,
 		'show_admin_column' => true,
@@ -27,7 +27,7 @@ class MapTaxonomy {
 	 * Registers hooks.
 	 */
 	public function __construct() {
-		new MapTaxonomyMeta();
+		new MapCategoryMeta();
 
 		add_action( 'init', [ __CLASS__, 'register_taxonomy' ] );
 		add_action( 'save_post_' . MapFeature::POST_TYPE_NAME, [ __CLASS__, 'save_map_selection' ] );
@@ -54,11 +54,11 @@ class MapTaxonomy {
 	 */
 	public static function register_taxonomy() {
 		register_taxonomy(
-			self::CATEGORY_NAME,
+			self::TAXONOMY_NAME,
 			MapFeature::POST_TYPE_NAME,
 			array_merge(
-				self::get_taxonomy_label_args( ucfirst( self::CATEGORY_NAME ) ),
-				self::CATEGORY_ARGS
+				self::get_taxonomy_label_args( ucfirst( self::TAXONOMY_NAME ) ),
+				self::TAXONOMY_ARGS
 			)
 		);
 	}
@@ -71,7 +71,7 @@ class MapTaxonomy {
 	public static function get_new_link() {
 		return get_bloginfo( 'url' )
 			. '/wp-admin/edit-tags.php?taxonomy='
-			. self::CATEGORY_NAME . '&post_type='
+			. self::TAXONOMY_NAME . '&post_type='
 			. MapFeature::POST_TYPE_NAME;
 	}
 
@@ -81,11 +81,11 @@ class MapTaxonomy {
 	 * @return void
 	 */
 	public static function meta_box_cb() {
-		$terms = get_terms( self::CATEGORY_NAME, [ 'hide_empty' => false ] );
+		$terms = get_terms( self::TAXONOMY_NAME, [ 'hide_empty' => false ] );
 
 		$post = get_post();
 		$map = wp_get_object_terms(
-			$post->ID, self::CATEGORY_NAME, [
+			$post->ID, self::TAXONOMY_NAME, [
 				'orderby' => 'term_id',
 				'order' => 'ASC',
 			]
@@ -103,8 +103,8 @@ class MapTaxonomy {
 			<label title='<?php echo esc_attr( $term->name ); ?>'>
 				<input type="radio"
 					data-term-radio
-					data-position="<?php echo esc_attr( MapTaxonomyMeta::get( $term->term_id, MapTaxonomyMeta::MAP_POSITION_META_KEY ) ); ?>"
-					name="<?php echo self::CATEGORY_NAME; ?>"
+					data-position="<?php echo esc_attr( MapCategoryMeta::get( $term->term_id, MapCategoryMeta::MAP_POSITION_META_KEY ) ); ?>"
+					name="<?php echo self::TAXONOMY_NAME; ?>"
 					value="<?php echo $term->term_id; ?>"
 					<?php checked( $term->term_id, $term_id ); ?>>
 				<span><?php echo $term->name; ?></span>
@@ -128,11 +128,11 @@ class MapTaxonomy {
 			return;
 		}
 
-		if ( ! isset( $_POST[ self::CATEGORY_NAME ] ) ) {
+		if ( ! isset( $_POST[ self::TAXONOMY_NAME ] ) ) {
 			return;
 		}
 
-		$map = sanitize_text_field( $_POST[ self::CATEGORY_NAME ] );
+		$map = sanitize_text_field( $_POST[ self::TAXONOMY_NAME ] );
 
 		// A valid map is required, so don't let this get published without one.
 		if ( empty( $map ) ) {
@@ -146,9 +146,9 @@ class MapTaxonomy {
 			return;
 		}
 
-		$term = get_term_by( 'id', $map, self::CATEGORY_NAME );
+		$term = get_term_by( 'id', $map, self::TAXONOMY_NAME );
 		if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-			wp_set_object_terms( $post_id, $term->term_id, self::CATEGORY_NAME, false );
+			wp_set_object_terms( $post_id, $term->term_id, self::TAXONOMY_NAME, false );
 		}
 	}
 }

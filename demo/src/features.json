@@ -1,0 +1,136 @@
+[
+  {
+    "id": 3159,
+    "date": "2018-02-12T07:12:04",
+    "date_gmt": "2018-02-12T12:12:04",
+    "guid": {
+      "rendered": "http://reunion:8888/?post_type=map-feature&#038;p=3159"
+    },
+    "modified": "2018-02-12T09:10:04",
+    "modified_gmt": "2018-02-12T14:10:04",
+    "slug": "eustis-parking",
+    "status": "publish",
+    "type": "map-feature",
+    "link": "http://reunion:8888/map-feature/eustis-parking/",
+    "title": {
+      "rendered": "Eustis Parking"
+    },
+    "content": {
+      "rendered": "",
+      "protected": false
+    },
+    "template": "",
+    "maps": [220],
+    "map-tag": [],
+    "colbycomms__maps__map_data":
+      "{\"type\":\"polygon\",\"latlngs\":[[{\"lat\":44.56303144317837,\"lng\":-69.66144613936196},{\"lat\":44.56288721903563,\"lng\":-69.66054106604135},{\"lat\":44.56331660491304,\"lng\":-69.66044098742714},{\"lat\":44.563446931692134,\"lng\":-69.66130599983445}]],\"center\":{\"lat\":44.563170824315925,\"lng\":-69.66093684841022}}",
+    "_links": {
+      "self": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/map-feature/3159"
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/map-feature"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/types/map-feature"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/media?parent=3159"
+        }
+      ],
+      "wp:term": [
+        {
+          "taxonomy": "map",
+          "embeddable": true,
+          "href": "http://reunion:8888/wp-json/wp/v2/maps?post=3159"
+        },
+        {
+          "taxonomy": "map-tag",
+          "embeddable": true,
+          "href": "http://reunion:8888/wp-json/wp/v2/map-tag?post=3159"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 3158,
+    "date": "2018-02-12T07:11:16",
+    "date_gmt": "2018-02-12T12:11:16",
+    "guid": {
+      "rendered": "http://reunion:8888/?post_type=map-feature&#038;p=3158"
+    },
+    "modified": "2018-02-12T09:10:26",
+    "modified_gmt": "2018-02-12T14:10:26",
+    "slug": "miler-library",
+    "status": "publish",
+    "type": "map-feature",
+    "link": "http://reunion:8888/map-feature/miler-library/",
+    "title": {
+      "rendered": "Miler Library"
+    },
+    "content": {
+      "rendered": "",
+      "protected": false
+    },
+    "template": "",
+    "maps": [220],
+    "map-tag": [],
+    "colbycomms__maps__map_data":
+      "{\"type\":\"marker\",\"latlng\":{\"lat\":44.56410255859513,\"lng\":-69.66323467968324},\"center\":{\"lat\":44.56410255859513,\"lng\":-69.66323467968324}}",
+    "_links": {
+      "self": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/map-feature/3158"
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/map-feature"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/types/map-feature"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "http://reunion:8888/wp-json/wp/v2/media?parent=3158"
+        }
+      ],
+      "wp:term": [
+        {
+          "taxonomy": "map",
+          "embeddable": true,
+          "href": "http://reunion:8888/wp-json/wp/v2/maps?post=3158"
+        },
+        {
+          "taxonomy": "map-tag",
+          "embeddable": true,
+          "href": "http://reunion:8888/wp-json/wp/v2/map-tag?post=3158"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]

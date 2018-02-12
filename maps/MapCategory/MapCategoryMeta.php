@@ -5,7 +5,7 @@
  * @package colbycomms/wp-maps
  */
 
-namespace ColbyComms\Maps\MapTaxonomy;
+namespace ColbyComms\Maps\MapCategory;
 
 use Carbon_Fields\{Field, Container};
 use Carbon_Fields\Helper\Helper;
@@ -13,7 +13,7 @@ use Carbon_Fields\Helper\Helper;
 /**
  * Handles post meta for the map-feature post type.
  */
-class MapTaxonomyMeta {
+class MapCategoryMeta {
 	const MAP_POSITION_META_KEY = 'colbycomms__maps__map_data';
 
 	/**
@@ -34,7 +34,7 @@ class MapTaxonomyMeta {
 	 */
 	public function register_details_meta_box() {
 		$this->details_box = Container::make( 'term_meta', 'Map Position' )
-			->where( 'term_taxonomy', '=', MapTaxonomy::CATEGORY_NAME );
+			->where( 'term_taxonomy', '=', MapCategory::TAXONOMY_NAME );
 	}
 	/**
 	 * Provides an array of fields to add.
@@ -43,7 +43,8 @@ class MapTaxonomyMeta {
 	 */
 	public static function get_fields() {
 		return [
-			Field::make( 'mapposition', self::MAP_POSITION_META_KEY, 'Map' ),
+			Field::make( 'mapposition', self::MAP_POSITION_META_KEY, 'Map' )
+				->set_visible_in_rest_api(),
 		];
 	}
 

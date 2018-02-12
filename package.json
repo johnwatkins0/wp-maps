@@ -2,7 +2,7 @@
   "name": "wp-maps",
   "version": "1.0.0",
   "description": "Display Google Maps from data entered via WordPress.",
-  "main": "src/js",
+  "main": "src/js/App",
   "repository": "https://github.com/ColbyCommunications/wp-maps",
   "author": "John Watkins <john.watkins@colby.edu>",
   "license": "MIT",
@@ -53,6 +53,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "css-color-function": "^1.3.3",
     "leaflet": "^1.3.1",
     "leaflet-draw": "^1.0.2",
     "prop-types": "^15.6.0",

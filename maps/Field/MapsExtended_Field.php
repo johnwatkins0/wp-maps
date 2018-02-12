@@ -38,7 +38,7 @@ class MapsExtended_Field extends Field {
 
 		wp_enqueue_script(
 			'leaflet-draw',
-			$root_uri . '/src/js/Fields/mapfield/draw.js', // 'https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw-src.js',
+			'https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw-src.js',
 			[ 'leaflet' ]
 		);
 

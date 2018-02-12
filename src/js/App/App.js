@@ -1,19 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 import { Key } from './Key/Key';
 import { OptionsPane } from './OptionsPane/OptionsPane';
 import Map from './Map/Map';
 
+const StyledContainer = styled.div`
+  display: flex;
+  height: 100%;
+
+  @supports (display: grid) {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+`;
+
+const StyledMapContainer = styled.div`
+  flex: 5 0 auto;
+`;
+
+const StyledSidebarContainer = styled.div`
+  flex: 1 1 auto;
+`;
+
 class App extends React.Component {
   static propTypes = {
     features: PropTypes.arrayOf(PropTypes.object),
     featuresEndpoint: PropTypes.string,
+    map: PropTypes.objectOf(PropTypes.any),
+    mapEndpoint: PropTypes.string,
   };
 
   static defaultProps = {
     features: [],
     featuresEndpoint: null,
+    map: {},
+    mapEndpoint: null,
   };
 
   constructor(props) {
@@ -21,32 +44,71 @@ class App extends React.Component {
 
     this.state = {
       features: props.features,
+      map: props.map,
+      activeFeature: 0,
+      showTooltips: false,
     };
   }
 
-  componentDidMount() {
-    if (this.state.features.length === 0 && this.featuresEndpoint) {
+  async componentDidMount() {
+    if (Object.keys(this.state.map).length === 0) {
+      await this.fetchMap();
+    }
+
+    if (this.state.features.length === 0) {
       this.fetchFeatures();
     }
   }
 
-  async fetchFeatures() {
-    const response = await fetch(this.featuresEndpoint);
-    const features = await response.json();
-    this.setState({ features });
-  }
+  setActiveFeature = activeFeature =>
+    new Promise(resolve => {
+      this.setState({ activeFeature }, resolve);
+    });
 
-  render = (props = {}, { features } = this.state) => (
-    <div>
-      <div>
-        <OptionsPane features={features} />
+  setShowTooltips = showTooltips =>
+    new Promise(resolve => {
+      this.setState({ showTooltips }, resolve);
+    });
+
+  fetchMap = () =>
+    new Promise(async resolve => {
+      const response = await fetch(this.props.mapEndpoint);
+      const map = await response.json();
+      this.setState({ map }, resolve);
+    });
+
+  fetchFeatures = () =>
+    new Promise(async resolve => {
+      const response = await fetch(this.props.featuresEndpoint);
+      const features = await response.json();
+      this.setState({ features }, resolve);
+    });
+
+  render = ({ features, map, activeFeature, showTooltips } = this.state) => (
+    <StyledContainer>
+      <StyledMapContainer>
+        <Map
+          map={map}
+          features={features}
+          activeFeature={activeFeature}
+          setActiveFeature={this.setActiveFeature}
+          showTooltips={showTooltips}
+        />
+      </StyledMapContainer>
+      <StyledSidebarContainer>
+        <OptionsPane
+          features={features}
+          setActiveFeature={this.setActiveFeature}
+          activeFeature={activeFeature}
+          showTooltips={showTooltips}
+          setShowTooltips={this.setShowTooltips}
+        />
         <Key features={features} />
-      </div>
-      <div>
-        <Map features={features} />
-      </div>
-    </div>
+      </StyledSidebarContainer>
+    </StyledContainer>
   );
+
+  setActiveFeature = this.setActiveFeature.bind(this);
 }
 
 export default App;

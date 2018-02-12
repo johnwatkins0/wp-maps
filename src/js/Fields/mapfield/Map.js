@@ -108,7 +108,11 @@ class Map extends React.Component {
 
   saveData(layer) {
     if (layer instanceof L.Marker) {
-      this.props.onChange({ type: 'marker', latlng: layer.getLatLng() });
+      this.props.onChange({
+        type: 'marker',
+        latlng: layer.getLatLng(),
+        center: layer.getLatLng(),
+      });
       return;
     }
 
@@ -117,27 +121,44 @@ class Map extends React.Component {
         type: 'circle',
         latlng: layer.getLatLng(),
         radius: layer.getRadius(),
+        center: layer.getLatLng(),
       });
       return;
     }
 
     if (layer instanceof L.CircleMarker) {
-      this.props.onChange({ type: 'circlemarker', latlng: layer.getLatLng() });
+      this.props.onChange({
+        type: 'circlemarker',
+        latlng: layer.getLatLng(),
+        center: layer.getLatLng(),
+      });
       return;
     }
 
     if (layer instanceof L.Polygon) {
-      this.props.onChange({ type: 'polygon', latlngs: layer.getLatLngs() });
+      this.props.onChange({
+        type: 'polygon',
+        latlngs: layer.getLatLngs(),
+        center: layer.getCenter(),
+      });
       return;
     }
 
     if (layer instanceof L.Rectangle) {
-      this.props.onChange({ type: 'rectangle', latlngs: layer.getLatLngs() });
+      this.props.onChange({
+        type: 'rectangle',
+        latlngs: layer.getLatLngs(),
+        center: layer.getCenter(),
+      });
       return;
     }
 
     if (layer instanceof L.Polyline) {
-      this.props.onChange({ type: 'polyline', latlngs: layer.getLatLngs() });
+      this.props.onChange({
+        type: 'polyline',
+        latlngs: layer.getLatLngs(),
+        center: getCenter(),
+      });
       return;
     }
   }

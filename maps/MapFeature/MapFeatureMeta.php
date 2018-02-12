@@ -28,6 +28,7 @@ class MapFeatureMeta {
 			[ $this, 'register_fields' ]
 		);
 	}
+
 	/**
 	 * Creates the box that will contain meta fields.
 	 */
@@ -35,6 +36,7 @@ class MapFeatureMeta {
 		$this->details_box = Container::make( 'post_meta', 'Feature Location' )
 			->where( 'post_type', '=', 'map-feature' );
 	}
+
 	/**
 	 * Provides an array of fields to add.
 	 *
@@ -42,7 +44,8 @@ class MapFeatureMeta {
 	 */
 	public static function get_fields() {
 		return [
-			Field::make( 'mapsextended', self::MAP_DATA_META_KEY, 'Map' ),
+			Field::make( 'mapsextended', self::MAP_DATA_META_KEY, 'Map' )
+				->set_visible_in_rest_api(),
 		];
 	}
 

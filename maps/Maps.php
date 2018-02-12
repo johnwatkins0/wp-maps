@@ -24,6 +24,7 @@ class Maps {
 	public function __construct() {
 		new MapFeature\MapFeature();
 		new MapFeature\MapFeatureMeta();
-		new MapTaxonomy\MapTaxonomy();
+		new MapCategory\MapCategory();
+		new MapTag\MapTag();
 	}
 }
