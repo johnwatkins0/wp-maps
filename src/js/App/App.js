@@ -8,20 +8,16 @@ import Map from './Map/Map';
 
 const StyledContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   height: 100%;
-
-  @supports (display: grid) {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-  }
 `;
 
 const StyledMapContainer = styled.div`
-  flex: 5 0 auto;
+  width: 100%;
 `;
 
 const StyledSidebarContainer = styled.div`
-  flex: 1 1 auto;
+  width: 100%;
 `;
 
 class App extends React.Component {
@@ -30,6 +26,8 @@ class App extends React.Component {
     featuresEndpoint: PropTypes.string,
     map: PropTypes.objectOf(PropTypes.any),
     mapEndpoint: PropTypes.string,
+    featureTypes: PropTypes.arrayOf(PropTypes.object),
+    featureTypeEndpoint: PropTypes.string,
   };
 
   static defaultProps = {
@@ -37,6 +35,8 @@ class App extends React.Component {
     featuresEndpoint: null,
     map: {},
     mapEndpoint: null,
+    featureTypes: [],
+    featureTypeEndpoint: null,
   };
 
   constructor(props) {
@@ -47,6 +47,7 @@ class App extends React.Component {
       map: props.map,
       activeFeature: 0,
       showTooltips: false,
+      featureTypes: props.featureTypes,
     };
   }
 
@@ -56,7 +57,11 @@ class App extends React.Component {
     }
 
     if (this.state.features.length === 0) {
-      this.fetchFeatures();
+      await this.fetchFeatures();
+    }
+
+    if (this.state.featureTypes.length === 0) {
+      this.fetchFeatureTypes();
     }
   }
 
@@ -84,7 +89,28 @@ class App extends React.Component {
       this.setState({ features }, resolve);
     });
 
-  render = ({ features, map, activeFeature, showTooltips } = this.state) => (
+  fetchFeatureTypes = () =>
+    new Promise(async resolve => {
+      const response = await fetch(
+        `${this.props.featureTypeEndpoint}?include=${this.getFeatureTypeIds()}`
+      );
+      const featureTypes = await response.json();
+      console.log(featureTypes);
+      this.setState({ featureTypes }, resolve);
+    });
+
+  getFeatureTypeIds = ({ features } = this.state) =>
+    features.reduce(
+      (ids, feature) =>
+        ids.concat(
+          feature['feature-type'].filter(id => ids.indexOf(id) === -1)
+        ),
+      []
+    );
+
+  render = (
+    { features, map, activeFeature, showTooltips, featureTypes } = this.state
+  ) => (
     <StyledContainer>
       <StyledMapContainer>
         <Map
@@ -98,12 +124,13 @@ class App extends React.Component {
       <StyledSidebarContainer>
         <OptionsPane
           features={features}
+          featureTypes={featureTypes}
           setActiveFeature={this.setActiveFeature}
           activeFeature={activeFeature}
           showTooltips={showTooltips}
           setShowTooltips={this.setShowTooltips}
         />
-        <Key features={features} />
+        <Key features={features} featureTypes={featureTypes} />
       </StyledSidebarContainer>
     </StyledContainer>
   );

@@ -5,7 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { DEFAULT_MAP_POSITION } from '../constants';
+import { DEFAULT_MAP_POSITION } from '../../constants';
 
 const StyledMapContainer = styled.div`
   height: 100%;
@@ -19,7 +19,9 @@ class Map extends React.Component {
 
     this.state = {
       position: null,
-      activeTermRadioInput: null,
+      activeMapTermInput: null,
+      activeFeatureType: null,
+      hasFeature: false,
     };
   }
 
@@ -29,24 +31,33 @@ class Map extends React.Component {
    * @return {void}
    */
   async componentDidMount() {
-    await this.initTermRadioInputs();
-    this.initTermRadioInputListeners();
+    await this.initMapTermInputs();
+    this.initMapTermInputListeners();
+    await this.initFeatureTypeInputs();
+    this.initFeatureTypeInputListeners();
     this.initMap();
   }
 
-  /**
-   * Lifecycle hook.
-   *
-   * @return {Boolean}
-   */
-  shouldComponentUpdate() {
-    // The component is a wrapper around Google Maps instance
-    // and we don't need to re-render it, because the map is updated
-    // manually.
-    return false;
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.activeFeatureType !== prevState.activeFeatureType) {
+      this.drawControlFull.initialize({
+        draw: this.getDrawOptions(),
+      });
+      if (this.state.hasFeature) {
+        this.switchToEditControl();
+      } else {
+        this.switchToFullControl();
+      }
+    }
+
+    if (this.state.hasFeature && !prevState.hasFeature) {
+      this.deactivateInactiveTypeInputs();
+    } else if (prevState.hasFeature && !this.state.hasFeature) {
+      this.activateTypeInputs();
+    }
   }
 
-  initTermRadioInputs = () =>
+  initMapTermInputs = () =>
     new Promise(resolve => {
       this.radioInputs = document.querySelectorAll('[data-term-radio]');
 
@@ -58,7 +69,7 @@ class Map extends React.Component {
 
         if (input.getAttribute('checked') === 'checked') {
           checkedInputFound = true;
-          this.setState({ activeTermRadioInput: input }, resolve);
+          this.setState({ activeMapTermInput: input }, resolve);
         }
       });
 
@@ -67,11 +78,66 @@ class Map extends React.Component {
       }
     });
 
-  initTermRadioInputListeners() {
+  initMapTermInputListeners() {
     [...this.radioInputs].forEach(input => {
       input.addEventListener('change', () => {
-        this.setState({ activeTermRadioInput: input }, this.setMapPosition);
+        this.setState({ activeMapTermInput: input }, this.setMapPosition);
       });
+    });
+  }
+
+  initFeatureTypeInputs = () =>
+    new Promise(resolve => {
+      this.featureTypeInputs = document.querySelectorAll(
+        '[data-feature-type-select]'
+      );
+
+      let checkedInputFound = false;
+      [...this.featureTypeInputs].forEach(input => {
+        if (checkedInputFound) {
+          return;
+        }
+
+        if (input.getAttribute('checked') === 'checked') {
+          checkedInputFound = true;
+          this.setState(
+            { activeFeatureType: input.getAttribute('feature-type-value') },
+            resolve
+          );
+        }
+      });
+
+      if (!checkedInputFound) {
+        resolve();
+      }
+    });
+
+  initFeatureTypeInputListeners() {
+    [...this.featureTypeInputs].forEach(input => {
+      input.addEventListener('change', event => {
+        this.setState({
+          activeFeatureType: input.getAttribute('data-feature-type-value'),
+        });
+      });
+    });
+  }
+
+  deactivateInactiveTypeInputs() {
+    [...this.featureTypeInputs].forEach(input => {
+      if (
+        input.getAttribute('data-feature-type-value') !==
+        this.state.activeFeatureType
+      ) {
+        input.setAttribute('disabled', true);
+      }
+    });
+  }
+
+  activateTypeInputs() {
+    [...this.featureTypeInputs].forEach(input => {
+      if (input.hasAttribute('disabled')) {
+        input.removeAttribute('disabled');
+      }
     });
   }
 
@@ -86,6 +152,22 @@ class Map extends React.Component {
     }, 500);
   }
 
+  getDrawOptions = () =>
+    [
+      'marker',
+      'circlemarker',
+      'circle',
+      'polygon',
+      'rectangle',
+      'polyline',
+    ].reduce(
+      (options, feature) =>
+        Object.assign({}, options, {
+          [feature]: this.state.activeFeatureType === feature,
+        }),
+      {}
+    );
+
   /**
    * Starts the drawing controller.
    *
@@ -93,7 +175,9 @@ class Map extends React.Component {
    */
   initDrawControl() {
     // The editor showing when no items have been drawn.
-    this.drawControlFull = new L.Control.Draw();
+    this.drawControlFull = new L.Control.Draw({
+      draw: this.getDrawOptions(),
+    });
 
     // The editor showing when an item has been drawn.
     this.drawControlEdit = new L.Control.Draw({
@@ -181,9 +265,10 @@ class Map extends React.Component {
   initDrawEventListeners() {
     this.map.on(L.Draw.Event.CREATED, event => {
       const layer = event.layer;
-      this.saveData(layer);
       this.drawnItems.addLayer(layer);
+      this.saveData(layer);
       this.switchToEditControl();
+      this.setState({ hasFeature: true });
     });
 
     this.map.on(L.Draw.Event.EDITED, event => {
@@ -195,6 +280,7 @@ class Map extends React.Component {
 
     this.map.on(L.Draw.Event.DELETED, () => {
       this.switchToFullControl();
+      this.setState({ hasFeature: false });
     });
   }
 
@@ -243,9 +329,9 @@ class Map extends React.Component {
 
   setMapPosition = () =>
     new Promise(resolve => {
-      const position = this.state.activeTermRadioInput
+      const position = this.state.activeMapTermInput
         ? JSON.parse(
-          this.state.activeTermRadioInput.getAttribute('data-position')
+          this.state.activeMapTermInput.getAttribute('data-position')
         )
         : Object.assign({}, DEFAULT_MAP_POSITION);
 
@@ -287,6 +373,7 @@ class Map extends React.Component {
       innerRef={container => {
         this.node = container;
       }}
+      {...this.state}
     />
   );
 }

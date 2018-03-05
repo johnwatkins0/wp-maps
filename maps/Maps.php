@@ -25,6 +25,6 @@ class Maps {
 		new MapFeature\MapFeature();
 		new MapFeature\MapFeatureMeta();
 		new MapCategory\MapCategory();
-		new MapTag\MapTag();
+		new MapFeatureType\MapFeatureType();
 	}
 }

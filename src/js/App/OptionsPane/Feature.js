@@ -13,16 +13,8 @@ const StyledButton = styled.button`
   font-size: 1rem;
   font-weight: ${({ active }) => (active ? '600' : '400')};
   border: none;
-  border-bottom: 1px solid ${STYLE_VARIABLES.primaryLight};
-  background-color: ${({ active }) =>
-    active ? STYLE_VARIABLES.primaryHighlight : STYLE_VARIABLES.primary};
   cursor: pointer;
-  color: white;
   text-align: left;
-
-  &:hover {
-    background-color: ${STYLE_VARIABLES.primaryHighlight};
-  }
 
   &:focus {
     z-index: 555;

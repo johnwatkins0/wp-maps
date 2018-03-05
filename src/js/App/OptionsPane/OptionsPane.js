@@ -4,7 +4,23 @@ import styled from 'styled-components';
 
 import { Feature } from './Feature';
 
-const StyledFeatureList = styled.div``;
+const StyledListContainer = styled.div`
+  padding: 1rem;
+  display: grid;
+  grid-gap: 1rem;
+
+  @media screen and (min-width: 500px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+`;
 
 export const OptionsPane = ({
   setActiveFeature,
@@ -12,18 +28,30 @@ export const OptionsPane = ({
   activeFeature,
   setShowTooltips,
   showTooltips,
+  featureTypes,
 }) => (
   <div>
-    <StyledFeatureList>
-      {features.map(feature => (
-        <Feature
-          {...feature}
-          onClick={setActiveFeature}
-          key={feature.id}
-          active={feature.id === activeFeature}
-        />
+    <StyledListContainer>
+      {featureTypes.map(featureType => (
+        <div key={featureType.id}>
+          <h2>{featureType.name}</h2>
+          <div>
+            {features
+              .filter(feature =>
+                feature['feature-type'].includes(featureType.id)
+              )
+              .map(feature => (
+                <Feature
+                  {...feature}
+                  onClick={setActiveFeature}
+                  key={feature.id}
+                  active={feature.id === activeFeature}
+                />
+              ))}
+          </div>
+        </div>
       ))}
-    </StyledFeatureList>
+    </StyledListContainer>
     <label>
       <input
         type="checkbox"

@@ -5,7 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { DEFAULT_MAP_POSITION } from '../constants';
+import { DEFAULT_MAP_POSITION } from '../../constants';
 
 const StyledMapContainer = styled.div`
   height: 100%;

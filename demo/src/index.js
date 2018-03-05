@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
     <App
       featuresEndpoint="http://reunion:8888/wp-json/wp/v2/map-feature/?maps=220"
       mapEndpoint="http://reunion:8888/wp-json/wp/v2/maps/220"
+      featureTypeEndpoint="http://reunion:8888/wp-json/wp/v2/feature-type"
     />,
     container
   );

@@ -25,6 +25,8 @@ const StyledMapContainer = styled.div`
 `;
 
 class Map extends React.Component {
+  features = [];
+
   static propTypes = {
     features: PropTypes.arrayOf(PropTypes.object).isRequired,
     map: PropTypes.objectOf(PropTypes.any).isRequired,
@@ -51,6 +53,26 @@ class Map extends React.Component {
       this.createMap();
     }
 
+    if (prevProps.features.length === 0 && this.props.features.length > 0) {
+      this.initFeatures();
+    }
+
+    if (prevProps.activeFeature !== this.props.activeFeature) {
+      this.features.forEach(feature => {
+        if (feature.featurePost.id === this.props.activeFeature) {
+          feature.feature.openPopup();
+        } else {
+          feature.feature.closePopup();
+        }
+      });
+    }
+
+    if (prevProps.showTooltips !== this.props.showTooltips) {
+      this.redrawMap();
+    }
+  }
+
+  redrawMap() {
     this.map.eachLayer(layer => {
       if (layer instanceof L.TileLayer) {
         return;
@@ -77,37 +99,47 @@ class Map extends React.Component {
     ).addTo(this.map);
   }
 
+  addTooltip({ feature, featurePost }) {
+    feature.bindTooltip(featurePost.title.rendered, {
+      direction: 'bottom',
+      className: 'tooltip',
+      permanent: true,
+    });
+  }
+
+  addTooltips() {
+    this.features.forEach(this.addTooltip);
+  }
+
   renderFeature({ feature, data, featurePost }) {
     const { content, id, title } = featurePost;
 
     this.features.push({ feature, data, featurePost });
 
     feature.addTo(this.map);
-    feature.bindPopup(
+    const popup = new L.popup().setContent(
       `<h2>${
         title.rendered
       }</h2>${content.rendered.trim()}<p>${Map.getGoogleLink(data.center)}</p>`
     );
 
+    feature.bindPopup(popup);
+
     if (this.props.activeFeature === id) {
       feature.openPopup();
     }
 
-    feature.bindTooltip(title.rendered, {
-      direction: 'bottom',
-      className: 'tooltip',
-      permanent: this.props.showTooltips,
+    feature.on('popupclose', () => {
+      this.props.setActiveFeature(0);
     });
 
-    feature.on('click', () => {
-      if (feature.isPopupOpen()) {
-        feature.openPopup();
-        this.props.setActiveFeature(id);
-      } else {
-        feature.closePopup();
-        this.props.setActiveFeature(0);
-      }
+    feature.on('popupopen', () => {
+      this.props.setActiveFeature(id);
     });
+
+    if (this.props.showTooltips) {
+      this.addTooltip({ feature, featurePost });
+    }
   }
 
   initFeature(featurePost) {
@@ -179,6 +211,7 @@ class Map extends React.Component {
   );
 
   initFeature = this.initFeature.bind(this);
+  addTooltip = this.addTooltip.bind(this);
 }
 
 export default Map;

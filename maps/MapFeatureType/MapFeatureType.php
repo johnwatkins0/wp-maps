@@ -5,7 +5,7 @@
  * @package colbycomms/wp-maps
  */
 
-namespace ColbyComms\Maps\MapCategory;
+namespace ColbyComms\Maps\MapFeatureType;
 
 use ColbyComms\Maps\MapTaxonomy\MapTaxonomy;
 use ColbyComms\Maps\MapFeature\MapFeature;
@@ -13,22 +13,21 @@ use ColbyComms\Maps\MapFeature\MapFeature;
 /**
  * Handles the map taxonomy.
  */
-class MapCategory extends MapTaxonomy {
-	const TAXONOMY_NAME = 'map';
+class MapFeatureType extends MapTaxonomy {
+	const TAXONOMY_NAME = 'feature-type';
 	const TAXONOMY_ARGS = [
 		'hierarchical' => true,
 		'show_in_rest' => true,
 		'show_admin_column' => true,
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
-		'rest_base' => 'maps',
-		'meta_box_cb' => [ __CLASS__, 'meta_box_cb' ]
+		'meta_box_cb' => [ __CLASS__, 'meta_box_cb' ],
 	];
 
 	/**
 	 * Registers hooks.
 	 */
 	public function __construct() {
-		new MapCategoryMeta();
+		new MapFeatureTypeMeta();
 
 		add_action( 'init', [ __CLASS__, 'register_taxonomy' ] );
 		add_action( 'save_post_' . MapFeature::POST_TYPE_NAME, [ __CLASS__, 'save_map_selection' ] );
@@ -58,20 +57,25 @@ class MapCategory extends MapTaxonomy {
 		}
 
 		foreach ( $terms as $term ) {
+			$feature_type = MapFeatureTypeMeta::get(
+				$term->term_id,
+				MapFeatureTypeMeta::MAP_FEATURE_TYPE_META_KEY
+			);
+
 		?>
 			<label title='<?php echo esc_attr( $term->name ); ?>'>
 				<input type="radio"
-					data-term-radio
-					data-position="<?php echo esc_attr( MapCategoryMeta::get( $term->term_id, MapCategoryMeta::MAP_POSITION_META_KEY ) ); ?>"
+					data-feature-type-select
+					data-feature-type-value="<?php echo esc_attr( $feature_type ); ?>"
 					name="<?php echo static::TAXONOMY_NAME; ?>"
 					value="<?php echo $term->term_id; ?>"
 					<?php checked( $term->term_id, $term_id ); ?>>
-				<span><?php echo $term->name; ?></span>
+				<span><?php echo "{$term->name} ($feature_type)"; ?></span>
 			</label><br>
 		<?php
 		}
 
-		echo '<p><a href=' . static::get_new_link() . '>
+		echo '<p><a href=' . self::get_new_link() . '>
 			Create new ' . str_replace( '-', ' ', static::TAXONOMY_NAME ) . '
 			</a></p>';
 	}
